@@ -3,6 +3,9 @@ package io.hoogland.models;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Data
@@ -52,6 +55,25 @@ public class Stopwatch implements Serializable {
         }
 
         return result;
+    }
+
+    public String getFormattedElapsedTime() {
+        long elapsedTime = this.getElapsedTime();
+
+        String format;
+        if (elapsedTime >= 3600L) {
+            format = "HH:mm:ss";
+        } else {
+            format = "mm:ss";
+        }
+        // Format the time with timezone UTC
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern(format).withZone(ZoneId.of("UTC"));
+
+        // Convert the time (long) to the format decided on above.
+        Instant instant = Instant.ofEpochSecond(elapsedTime);
+
+        return formatter.format(instant);
     }
 
     /**
